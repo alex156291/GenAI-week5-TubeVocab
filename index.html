@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TubeVocab Pro｜沉浸式雙語字幕 & 隱藏抽屜單字庫</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 頂部導覽列 -->
+  <header class="navbar">
+    <div class="logo">🎬 TubeVocab Pro</div>
+    
+    <div class="url-bar">
+      <input type="text" id="ytUrl" placeholder="貼上含有英文 CC 字幕的 YouTube 網址..." value="https://www.youtube.com/watch?v=UNP03fDSj1U" />
+      <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeVideo()">🔍 載入雙語字幕</button>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-drawer-trigger" onclick="toggleDrawer(true)">
+        🗂️ 我的單字卡庫 <span class="badge" id="navCardCount">0</span>
+      </button>
+      <button class="btn btn-outline" onclick="toggleTheme()" title="切換深淺色主題">🌓</button>
+    </div>
+  </header>
+
+  <!-- 主畫面：左側影片區 + 右側全高雙語自動滾動字幕 -->
+  <main class="main-layout">
+    
+    <!-- 左欄：影片播放器 + 最新點擊單字即時預覽列 -->
+    <section class="video-section">
+      <div class="video-wrapper">
+        <div id="player"></div>
+      </div>
+
+      <!-- 點擊字幕單字時的底部輕量預覽卡（不佔空間，也可直接點開抽屜） -->
+      <div class="quick-preview" id="quickPreview">
+        <div class="preview-placeholder">
+          👆 觀看影片時，直接<strong>點擊右側字幕中不懂的英文單字</strong>，即可在此即時查看釋義並自動收入右上角「我的單字卡庫」！
+        </div>
+      </div>
+    </section>
+
+    <!-- 右欄：全高雙語互動字幕（鎖定高度、自動平滑置中滾動） -->
+    <section class="subtitle-section">
+      <div class="sub-header">
+        <div>
+          <span class="sub-title">📜 雙語同步 CC 字幕</span>
+          <span class="sub-hint">（點擊任意英文字即查即收）</span>
+        </div>
+        <div class="sub-controls">
+          <label class="auto-scroll-label">
+            <input type="checkbox" id="autoScrollToggle" checked /> 自動跟隨滾動
+          </label>
+          <span id="subCount" class="sub-count">尚未載入</span>
+        </div>
+      </div>
+
+      <!-- 字幕滾動容器 -->
+      <div class="subtitle-list" id="subtitleList">
+        <div class="status-msg">請在上方貼上 YouTube 網址並點擊「載入雙語字幕」</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 背景遮罩（打開單字卡抽屜時顯示） -->
+  <div class="drawer-backdrop" id="drawerBackdrop" onclick="toggleDrawer(false)"></div>
+
+  <!-- 隱藏式滑出抽屜：單字卡列表 / 翻牌記憶 / 克漏字測驗 -->
+  <aside class="vocab-drawer" id="vocabDrawer">
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <h2>🗂️ 我的單字卡庫</h2>
+        <span id="deckStats" class="deck-stats">共 0 張單字卡</span>
+      </div>
+      <div class="drawer-header-btns">
+        <button class="btn btn-outline btn-sm" onclick="toggleStarFilter()" id="starFilterBtn">★ 只看星號 (0)</button>
+        <button class="btn btn-outline btn-sm" onclick="clearAllCards()">🗑️ 清空</button>
+        <button class="btn-close" onclick="toggleDrawer(false)" title="關閉列表">✕</button>
+      </div>
+    </div>
+
+    <div class="drawer-tabs">
+      <button class="tab active" onclick="switchMode('list', this)">📋 單字卡列表</button>
+      <button class="tab" onclick="switchMode('flashcard', this)">🔄 翻牌記憶</button>
+      <button class="tab" onclick="switchMode('cloze', this)">✍️ 原句克漏字</button>
+    </div>
+
+    <div class="drawer-body" id="workspace"></div>
+  </aside>
+
+  <!-- 右下角輕量通知 -->
+  <div class="toast" id="toast"></div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="script.js"></script>
+</body>
+</html>
